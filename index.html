@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scientific Calculator</title>
+    <title>Kalkulator</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -11,6 +11,7 @@
             background: linear-gradient(135deg, #1e3c72, #2a5298);
             color: #fff;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -66,6 +67,22 @@
         .calculator .equals:hover {
             background: linear-gradient(135deg, #ff7043, #f4511e);
         }
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        footer a {
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        footer img {
+            width: 20px;
+            height: 20px;
+        }
     </style>
 </head>
 <body>
@@ -100,7 +117,22 @@
             <button onclick="appendNumber('.')">.</button>
             <button onclick="calculate()" class="equals">=</button>
         </div>
+        <div class="row">
+            <button onclick="performScientificOperation('sqrt')">√x</button>
+            <button onclick="performScientificOperation('square')">x²</button>
+            <button onclick="performScientificOperation('sin')">sin</button>
+            <button onclick="performScientificOperation('cos')">cos</button>
+        </div>
+        <div class="row">
+            <button onclick="performScientificOperation('tan')">tan</button>
+            <button onclick="performScientificOperation('log')">log</button>
+            <button onclick="performScientificOperation('exp')">eˣ</button>
+            <button onclick="performScientificOperation('pi')">π</button>
+        </div>
     </div>
+    <footer>
+        <p>&copy; 2025 by Me. Visit my <a href="https://github.com/" target="_blank"><img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub Logo"> GitHub</a></p>
+    </footer>
     <script>
         const display = document.getElementById('display');
 
@@ -132,6 +164,40 @@
             }
         }
 
+        function performScientificOperation(operation) {
+            try {
+                let value = parseFloat(display.textContent);
+                switch (operation) {
+                    case 'sqrt':
+                        display.textContent = Math.sqrt(value);
+                        break;
+                    case 'square':
+                        display.textContent = value ** 2;
+                        break;
+                    case 'sin':
+                        display.textContent = Math.sin(value * Math.PI / 180).toFixed(6);
+                        break;
+                    case 'cos':
+                        display.textContent = Math.cos(value * Math.PI / 180).toFixed(6);
+                        break;
+                    case 'tan':
+                        display.textContent = Math.tan(value * Math.PI / 180).toFixed(6);
+                        break;
+                    case 'log':
+                        display.textContent = Math.log10(value).toFixed(6);
+                        break;
+                    case 'exp':
+                        display.textContent = Math.exp(value).toFixed(6);
+                        break;
+                    case 'pi':
+                        display.textContent = Math.PI.toFixed(6);
+                        break;
+                }
+            } catch (e) {
+                display.textContent = 'Error';
+            }
+        }
+
         document.addEventListener('keydown', (event) => {
             const key = event.key;
             if (!isNaN(key)) {
@@ -139,6 +205,7 @@
             } else if (["+", "-", "*", "/", "%"].includes(key)) {
                 appendOperator(key);
             } else if (key === "Enter") {
+                event.preventDefault();
                 calculate();
             } else if (key === "Backspace") {
                 deleteLast();
