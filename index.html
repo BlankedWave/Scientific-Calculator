@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator</title>
+    <title>Scientific Calculator</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -24,6 +24,14 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
             overflow: hidden;
             width: 350px;
+        }
+        .calculator .title {
+            background: linear-gradient(135deg, #4caf50, #388e3c);
+            color: #fff;
+            text-align: center;
+            font-size: 1.5rem;
+            padding: 10px;
+            font-weight: bold;
         }
         .calculator .display {
             background: #f4f4f4;
@@ -87,6 +95,7 @@
 </head>
 <body>
     <div class="calculator">
+        <div class="title">Scientific Calculator</div>
         <div class="display" id="display">0</div>
         <div class="row">
             <button onclick="clearDisplay()" class="function">C</button>
@@ -118,16 +127,16 @@
             <button onclick="calculate()" class="equals">=</button>
         </div>
         <div class="row">
-            <button onclick="performScientificOperation('sqrt')">√x</button>
-            <button onclick="performScientificOperation('square')">x²</button>
-            <button onclick="performScientificOperation('sin')">sin</button>
-            <button onclick="performScientificOperation('cos')">cos</button>
+            <button onclick="appendScientificOperation('Math.sqrt')">√</button>
+            <button onclick="appendScientificOperation('(x) => x ** 2')">x²</button>
+            <button onclick="appendScientificOperation('(x) => Math.sin(x * Math.PI / 180)')">sin</button>
+            <button onclick="appendScientificOperation('(x) => Math.cos(x * Math.PI / 180)')">cos</button>
         </div>
         <div class="row">
-            <button onclick="performScientificOperation('tan')">tan</button>
-            <button onclick="performScientificOperation('log')">log</button>
-            <button onclick="performScientificOperation('exp')">eˣ</button>
-            <button onclick="performScientificOperation('pi')">π</button>
+            <button onclick="appendScientificOperation('(x) => Math.tan(x * Math.PI / 180)')">tan</button>
+            <button onclick="appendScientificOperation('Math.log10')">log</button>
+            <button onclick="appendScientificOperation('Math.exp')">eˣ</button>
+            <button onclick="appendOperator(Math.PI.toFixed(6))">π</button>
         </div>
     </div>
     <footer>
@@ -156,43 +165,19 @@
             display.textContent = display.textContent.slice(0, -1) || '0';
         }
 
-        function calculate() {
-            try {
-                display.textContent = eval(display.textContent);
-            } catch (e) {
-                display.textContent = 'Error';
-            }
+        function appendScientificOperation(func) {
+            display.textContent += ` ${func}(`;
         }
 
-        function performScientificOperation(operation) {
+        function calculate() {
             try {
-                let value = parseFloat(display.textContent);
-                switch (operation) {
-                    case 'sqrt':
-                        display.textContent = Math.sqrt(value);
-                        break;
-                    case 'square':
-                        display.textContent = value ** 2;
-                        break;
-                    case 'sin':
-                        display.textContent = Math.sin(value * Math.PI / 180).toFixed(6);
-                        break;
-                    case 'cos':
-                        display.textContent = Math.cos(value * Math.PI / 180).toFixed(6);
-                        break;
-                    case 'tan':
-                        display.textContent = Math.tan(value * Math.PI / 180).toFixed(6);
-                        break;
-                    case 'log':
-                        display.textContent = Math.log10(value).toFixed(6);
-                        break;
-                    case 'exp':
-                        display.textContent = Math.exp(value).toFixed(6);
-                        break;
-                    case 'pi':
-                        display.textContent = Math.PI.toFixed(6);
-                        break;
-                }
+                const expression = display.textContent
+                    .replace(/Math\.sqrt/g, 'Math.sqrt')
+                    .replace(/\(x\) => x \*\* 2/g, '(x) => x ** 2')
+                    .replace(/\(x\) => Math\.sin\(x \* Math\.PI \/ 180\)/g, 'Math.sin')
+                    .replace(/\(x\) => Math\.cos\(x \* Math\.PI \/ 180\)/g, 'Math.cos')
+                    .replace(/\(x\) => Math\.tan\(x \* Math\.PI \/ 180\)/g, 'Math.tan');
+                display.textContent = eval(expression);
             } catch (e) {
                 display.textContent = 'Error';
             }
