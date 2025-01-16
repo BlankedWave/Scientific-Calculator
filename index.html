@@ -127,16 +127,16 @@
             <button onclick="calculate()" class="equals">=</button>
         </div>
         <div class="row">
-            <button onclick="appendScientificOperation('Math.sqrt')">√</button>
-            <button onclick="appendScientificOperation('(x) => x ** 2')">x²</button>
-            <button onclick="appendScientificOperation('(x) => Math.sin(x * Math.PI / 180)')">sin</button>
-            <button onclick="appendScientificOperation('(x) => Math.cos(x * Math.PI / 180)')">cos</button>
+            <button onclick="performScientificOperation('sqrt')">√x</button>
+            <button onclick="performScientificOperation('square')">x²</button>
+            <button onclick="performScientificOperation('sin')">sin</button>
+            <button onclick="performScientificOperation('cos')">cos</button>
         </div>
         <div class="row">
-            <button onclick="appendScientificOperation('(x) => Math.tan(x * Math.PI / 180)')">tan</button>
-            <button onclick="appendScientificOperation('Math.log10')">log</button>
-            <button onclick="appendScientificOperation('Math.exp')">eˣ</button>
-            <button onclick="appendOperator(Math.PI.toFixed(6))">π</button>
+            <button onclick="performScientificOperation('tan')">tan</button>
+            <button onclick="performScientificOperation('log')">log</button>
+            <button onclick="performScientificOperation('exp')">eˣ</button>
+            <button onclick="performScientificOperation('pi')">π</button>
         </div>
     </div>
     <footer>
@@ -165,19 +165,43 @@
             display.textContent = display.textContent.slice(0, -1) || '0';
         }
 
-        function appendScientificOperation(func) {
-            display.textContent += ` ${func}(`;
-        }
-
         function calculate() {
             try {
-                const expression = display.textContent
-                    .replace(/Math\.sqrt/g, 'Math.sqrt')
-                    .replace(/\(x\) => x \*\* 2/g, '(x) => x ** 2')
-                    .replace(/\(x\) => Math\.sin\(x \* Math\.PI \/ 180\)/g, 'Math.sin')
-                    .replace(/\(x\) => Math\.cos\(x \* Math\.PI \/ 180\)/g, 'Math.cos')
-                    .replace(/\(x\) => Math\.tan\(x \* Math\.PI \/ 180\)/g, 'Math.tan');
-                display.textContent = eval(expression);
+                display.textContent = eval(display.textContent);
+            } catch (e) {
+                display.textContent = 'Error';
+            }
+        }
+
+        function performScientificOperation(operation) {
+            try {
+                let value = parseFloat(display.textContent);
+                switch (operation) {
+                    case 'sqrt':
+                        display.textContent = Math.sqrt(value);
+                        break;
+                    case 'square':
+                        display.textContent = value ** 2;
+                        break;
+                    case 'sin':
+                        display.textContent = Math.sin(value * Math.PI / 180).toFixed(6);
+                        break;
+                    case 'cos':
+                        display.textContent = Math.cos(value * Math.PI / 180).toFixed(6);
+                        break;
+                    case 'tan':
+                        display.textContent = Math.tan(value * Math.PI / 180).toFixed(6);
+                        break;
+                    case 'log':
+                        display.textContent = Math.log10(value).toFixed(6);
+                        break;
+                    case 'exp':
+                        display.textContent = Math.exp(value).toFixed(6);
+                        break;
+                    case 'pi':
+                        display.textContent = Math.PI.toFixed(6);
+                        break;
+                }
             } catch (e) {
                 display.textContent = 'Error';
             }
